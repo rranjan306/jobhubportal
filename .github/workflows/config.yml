@@ -1,4 +1,4 @@
-name: Angular CI/CD Pipeline
+name: Build and Push Docker Image
 
 on:
   push:
@@ -9,50 +9,21 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION: us-east-1
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REPOSITORY: ${{ secrets.AWS_REPOSITORY }}
-      DOMAIN_OWNER: ${{ secrets.DOMAIN_OWNER }}
+      DIGITALOCEAN_ACCESS_TOKEN: ${{secrets.DIGITALOCEAN_ACCESS_TOKEN}}
       REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
-      IMAGE_NAME_CORE: angular
+      IMAGE_NAME_CORE: jobhubportal
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "18"
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install awscli --upgrade --user
-
-      - name: Configure AWS credentials
-        run: |
-          aws configure set aws_access_key_id $AWS_ACCESS_KEY
-          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-          aws configure set default.region $AWS_REGION
-
-      - name: Log in to AWS CodeArtifact
-        run: aws codeartifact login --tool npm --repository $AWS_REPOSITORY --domain $AWS_REPOSITORY --domain-owner $DOMAIN_OWNER
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Angular app
-        run: npm run build --prod
-
+      # Install doctl.
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DO_ACCESS_TOKEN }}
+          token: $DIGITALOCEAN_ACCESS_TOKEN
 
-      - name: Log in to DO Container Registry
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 600
 
       - name: Build Container Image
