@@ -1,0 +1,7 @@
+<div class="grid-container">
+  <div class="grid-item" *ngFor="let item of lists">
+    <a [href]="item.portal_url" target="_blank">
+      <img [src]="item.imageUrl" [alt]="item.name" width="100%" height="100%" />
+    </a>
+  </div>
+</div>
