@@ -33,4 +33,4 @@ jobs:
         run: docker build -t registry.digitalocean.com/$REGISTRY_NAME/$IMAGE_NAME_CORE:$(echo $GITHUB_SHA | head -c7) .
 
       - name: Push image to DO Container Registry
-        run: docker push registry.digitalocean.com/$REGISTRY_NAME/$IMAGE_NAME_CORE:$(echo $GITHUB_SHA | head -c7)
+        run: docker push registry.digitalocean.com/blackjack/$IMAGE_NAME_CORE:$(echo $GITHUB_SHA | head -c7)
