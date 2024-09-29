@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: angular-app
-          image: registry.digitalocean.com/blackjack/angular:<TAG>
+          image: angular-local-image:latest
           ports:
             - containerPort: 80
           imagePullPolicy: Always
